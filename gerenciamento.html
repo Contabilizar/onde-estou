@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <img id="logo" src="logo.png" alt="Logo">
+                <span class="logo-text">Onde Estou</span>
+            </div>
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="solicitacoes.html">Solicitações</a></li>
+                <li><a href="gerenciamento.html" class="active">Gerenciamento</a></li>
+                <li><button id="logoutBtn" class="logout-btn">Sair</button></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        <h1>Gerenciamento</h1>
+        <section>
+            <h3>Usuários</h3>
+            <div id="usuariosList"></div>
+        </section>
+        <section>
+            <h3>Atividades</h3>
+            <ul id="atividades"></ul>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025</p>
+    </footer>
+    <script src="gerenciamento.js"></script>
+</body>
+</html>
