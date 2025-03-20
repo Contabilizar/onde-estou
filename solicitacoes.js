@@ -10,13 +10,14 @@ const firebaseConfig = {
     appId: "1:531700999360:web:30480679b1ec78b3ca3925"
 };
 
-// Inicializar Firebase
+// Inicializar Firebase globalmente
+let db;
 if (typeof firebase === 'undefined') {
     console.error('Firebase não foi carregado.');
 } else {
     console.log('Firebase carregado. Versão:', firebase.SDK_VERSION);
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    db = firebase.firestore();
     console.log('Firestore inicializado.');
 }
 
@@ -28,6 +29,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const solicitacoesLista = document.getElementById('solicitacoes');
     const logoutBtn = document.getElementById('logoutBtn');
     const gerenciamentoLink = document.getElementById('gerenciamentoLink');
+
+    if (!db) {
+        console.error('Firestore não está disponível.');
+        return;
+    }
 
     // Carregar solicitações iniciais (se vazio)
     const solicitacoesSnapshot = await db.collection('solicitacoes').get();
