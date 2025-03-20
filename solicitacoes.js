@@ -1,31 +1,50 @@
+const firebaseConfig = {
+    apiKey: "AIzaSyCt7HvTd9a1GCXVJogQPox7RyvScS5tSnk",
+    authDomain: "ondeestou-af562.firebaseapp.com",
+    projectId: "ondeestou-af562",
+    storageBucket: "ondeestou-af562.firebasestorage.app",
+    messagingSenderId: "531700999360",
+    appId: "1:531700999360:web:30480679b1ec78b3ca3925"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 let usuarioLogado = null;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const solicitacaoForm = document.getElementById('solicitacaoForm');
     const solicitacoesLista = document.getElementById('solicitacoes');
     const logoutBtn = document.getElementById('logoutBtn');
     const gerenciamentoLink = document.getElementById('gerenciamentoLink');
 
+    const solicitacoesSnapshot = await db.collection('solicitacoes').get();
+    if (solicitacoesSnapshot.empty) {
+        await db.collection('solicitacoes').add({
+            usuario: 'Wagner Santos',
+            destino: 'Dr. João',
+            motivo: 'Agendar consulta',
+            status: 'aberta',
+            descricao: '',
+            dataCriacao: '20/03/2025 10:00:00'
+        });
+    }
+
     verificarSessao();
 
-    solicitacaoForm.addEventListener('submit', (e) => {
+    solicitacaoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const destino = document.getElementById('destino').value;
         const motivo = document.getElementById('motivo').value;
 
-        const solicitacao = {
-            id: Date.now(),
+        await db.collection('solicitacoes').add({
             usuario: usuarioLogado.usuario,
             destino: destino,
             motivo: motivo,
             status: 'aberta',
             descricao: '',
             dataCriacao: new Date().toLocaleString('pt-BR')
-        };
-
-        const solicitacoes = JSON.parse(localStorage.getItem('solicitacoes') || '[]');
-        solicitacoes.push(solicitacao);
-        localStorage.setItem('solicitacoes', JSON.stringify(solicitacoes));
+        });
 
         carregarSolicitacoes();
         solicitacaoForm.reset();
@@ -34,30 +53,31 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutBtn.addEventListener('click', logout);
 });
 
-function verificarSessao() {
+async function verificarSessao() {
     const sessao = JSON.parse(localStorage.getItem('sessao') || '{}');
     if (!sessao.usuario || sessao.expiracao <= Date.now()) {
         window.location.href = 'index.html';
         return;
     }
-    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-    usuarioLogado = usuarios.find(u => u.usuario === sessao.usuario);
-    if (!usuarioLogado) {
+    const usuariosSnapshot = await db.collection('usuarios').where('usuario', '==', sessao.usuario).get();
+    if (usuariosSnapshot.empty) {
         window.location.href = 'index.html';
         return;
     }
+    usuarioLogado = usuariosSnapshot.docs[0].data();
     if (usuarioLogado.cargo === 'admin') {
         document.getElementById('gerenciamentoLink').classList.remove('hidden');
     }
     carregarSolicitacoes();
 }
 
-function carregarSolicitacoes() {
-    const solicitacoes = JSON.parse(localStorage.getItem('solicitacoes') || '[]');
+async function carregarSolicitacoes() {
+    const solicitacoesSnapshot = await db.collection('solicitacoes').get();
     const solicitacoesLista = document.getElementById('solicitacoes');
     solicitacoesLista.innerHTML = '';
 
-    solicitacoes.forEach((solicitacao, index) => {
+    solicitacoesSnapshot.forEach((doc) => {
+        const solicitacao = doc.data();
         const li = document.createElement('li');
         li.classList.add('solicitacao-item');
         li.innerHTML = `
@@ -76,13 +96,13 @@ function carregarSolicitacoes() {
             const updateBtn = document.createElement('button');
             updateBtn.textContent = 'Atualizar';
             updateBtn.classList.add('update-solicitacao-btn');
-            updateBtn.onclick = () => atualizarSolicitacao(index);
+            updateBtn.onclick = () => atualizarSolicitacao(doc.id);
             actionsDiv.appendChild(updateBtn);
 
             const deleteBtn = document.createElement('button');
             deleteBtn.textContent = 'Excluir';
             deleteBtn.classList.add('delete-btn');
-            deleteBtn.onclick = () => excluirSolicitacao(index);
+            deleteBtn.onclick = () => excluirSolicitacao(doc.id);
             actionsDiv.appendChild(deleteBtn);
 
             li.appendChild(actionsDiv);
@@ -92,26 +112,21 @@ function carregarSolicitacoes() {
     });
 }
 
-function atualizarSolicitacao(index) {
-    const solicitacoes = JSON.parse(localStorage.getItem('solicitacoes') || '[]');
-    const solicitacao = solicitacoes[index];
-
-    const descricao = prompt('Descreva o ocorrido:', solicitacao.descricao);
+async function atualizarSolicitacao(id) {
+    const descricao = prompt('Descreva o ocorrido:');
     if (descricao === null) return;
 
     const status = confirm('A ligação foi concluída com sucesso? (OK para Finalizar, Cancelar para manter Aberta)') ? 'finalizada' : 'aberta';
-    solicitacao.status = status;
-    solicitacao.descricao = descricao;
-
-    localStorage.setItem('solicitacoes', JSON.stringify(solicitacoes));
+    await db.collection('solicitacoes').doc(id).update({
+        status: status,
+        descricao: descricao
+    });
     carregarSolicitacoes();
 }
 
-function excluirSolicitacao(index) {
+async function excluirSolicitacao(id) {
     if (confirm('Tem certeza que deseja excluir esta solicitação?')) {
-        const solicitacoes = JSON.parse(localStorage.getItem('solicitacoes') || '[]');
-        solicitacoes.splice(index, 1);
-        localStorage.setItem('solicitacoes', JSON.stringify(solicitacoes));
+        await db.collection('solicitacoes').doc(id).delete();
         carregarSolicitacoes();
     }
 }

@@ -5,19 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
 <body>
-    <div class="login-container">
+    <main class="login-container">
         <h1>Login</h1>
         <form id="loginForm">
             <label for="loginUsuario">Usuário</label>
-            <input type="text" id="loginUsuario" name="loginUsuario" required placeholder="Seu usuário">
+            <input type="text" id="loginUsuario" name="loginUsuario" required placeholder="Digite seu usuário">
             <label for="loginSenha">Senha</label>
-            <input type="password" id="loginSenha" name="loginSenha" required placeholder="Sua senha">
+            <input type="password" id="loginSenha" name="loginSenha" required placeholder="Digite sua senha">
             <button type="submit">Entrar</button>
             <a href="cadastro.html" class="btn-link">Cadastrar</a>
         </form>
-    </div>
+    </main>
+    <footer>
+        <p>© 2025</p>
+    </footer>
     <script src="login.js"></script>
 </body>
 </html>
