@@ -1,7 +1,7 @@
 console.log('Iniciando cadastro.js...');
 
 if (typeof firebase === 'undefined') {
-    console.error('Firebase não foi carregado. Verifique os scripts no <head> do HTML.');
+    console.error('Firebase não foi carregado no início do script.');
 } else {
     console.log('Firebase detectado, inicializando...');
     const firebaseConfig = {
@@ -23,7 +23,7 @@ if (typeof firebase === 'undefined') {
             console.error('Elemento #cadastroForm não encontrado.');
             return;
         }
-        console.log('Formulário de cadastro encontrado:', cadastroForm);
+        console.log('Formulário de cadastro encontrado.');
 
         try {
             console.log('Verificando usuários iniciais...');
