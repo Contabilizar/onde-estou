@@ -5,17 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solicitações</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Firebase SDK 8.10.1 -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script>
-        window.addEventListener('load', () => {
-            if (typeof firebase === 'undefined') {
-                console.error('Firebase não carregou após o load da página.');
-            } else {
-                console.log('Firebase carregou corretamente após o load. Versão:', firebase.SDK_VERSION);
-            }
-        });
-    </script>
 </head>
 <body>
     <header>
@@ -24,18 +16,30 @@
                 <img id="logo" src="logo.png" alt="Logo">
                 <span class="logo-text">Onde Estou</span>
             </div>
-            <a href="dashboard.html" class="btn-link">Dashboard</a>
-            <button id="logout">Sair</button>
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="solicitacoes.html" class="active">Solicitações</a></li>
+                <li id="gerenciamentoLink" class="hidden"><a href="gerenciamento.html">Gerenciamento</a></li>
+                <li><button id="logoutBtn" class="logout-btn">Sair</button></li>
+            </ul>
         </nav>
     </header>
-    <main class="solicitacoes-container">
+    <main class="container">
         <h1>Solicitações</h1>
-        <form id="solicitacaoForm" action="javascript:void(0)">
-            <label for="mensagem">Mensagem</label>
-            <input type="text" id="mensagem" name="mensagem" required placeholder="Digite sua solicitação">
-            <button type="submit">Enviar</button>
-        </form>
-        <ul id="listaSolicitacoes"></ul>
+        <section id="novaSolicitacaoSection">
+            <h3>Nova Solicitação</h3>
+            <form id="solicitacaoForm">
+                <label for="destino">Destino da Ligação</label>
+                <input type="text" id="destino" name="destino" required placeholder="Ex: Dr. João">
+                <label for="motivo">Motivo</label>
+                <textarea id="motivo" name="motivo" required placeholder="Descreva o motivo da ligação"></textarea>
+                <button type="submit">Enviar Solicitação</button>
+            </form>
+        </section>
+        <section id="listaSolicitacoes">
+            <h3>Solicitações Registradas</h3>
+            <ul id="solicitacoes"></ul>
+        </section>
     </main>
     <footer>
         <p>© 2025</p>
