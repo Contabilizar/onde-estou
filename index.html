@@ -10,9 +10,17 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
 <body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <img id="logo" src="logo.png" alt="Logo">
+                <span class="logo-text">Onde Estou</span>
+            </div>
+        </nav>
+    </header>
     <main class="login-container">
         <h1>Login</h1>
-        <form id="loginForm">
+        <form id="loginForm" action="javascript:void(0)">
             <label for="loginUsuario">Usuário</label>
             <input type="text" id="loginUsuario" name="loginUsuario" required placeholder="Digite seu usuário">
             <label for="loginSenha">Senha</label>
